@@ -1,0 +1,42 @@
+/* Custom Bootstrap styles for the NutriScan application */
+
+body {
+    background-color: #f8f9fa; /* Light background for better visibility */
+}
+
+.navbar {
+    background-color: #007bff; /* Custom navbar color */
+}
+
+.navbar-brand {
+    color: #ffffff; /* Navbar brand text color */
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff; /* Navbar link color */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffc107; /* Navbar link hover color */
+}
+
+.btn-custom {
+    background-color: #28a745; /* Custom button color */
+    color: #ffffff; /* Button text color */
+}
+
+.btn-custom:hover {
+    background-color: #218838; /* Button hover color */
+}
+
+.card {
+    border: 1px solid #dee2e6; /* Custom card border */
+}
+
+.card-title {
+    color: #343a40; /* Card title color */
+}
+
+.card-text {
+    color: #6c757d; /* Card text color */
+}
