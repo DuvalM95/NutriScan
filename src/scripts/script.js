@@ -37,28 +37,62 @@ function cerrarSesion() {
   window.location.href = "inicio_sesion.html";
 }
 
-function cargarPlan() {
-  fetch("https://mocki.io/v1/938fd21c-4eb4-41db-9a62-1c579d30dc85")
-    .then(response => response.json())
+// Mostrar receta aleatoria
+function recetaAleatoria() {
+  fetch("https://www.themealdb.com/api/json/v1/1/random.php")
+    .then(res => res.json())
     .then(data => {
-      const contenedor = document.getElementById("contenidoPlan");
-      contenedor.innerHTML = ""; // Limpiar contenido anterior
+      const receta = data.meals[0];
+      const contenedor = document.getElementById("recetaAleatoria");
 
-      if (data.plan && Array.isArray(data.plan)) {
-        data.plan.forEach(dia => {
-          const diaHTML = `
-            <div class="border-bottom py-2">
-              <strong>${dia.dia}:</strong> ${dia.comidas}
-            </div>`;
-          contenedor.innerHTML += diaHTML;
-        });
-      } else {
-        contenedor.innerHTML = "<p>No hay datos de plan disponibles.</p>";
-      }
+      contenedor.innerHTML = `
+        <h3 class="text-lg font-bold mb-2">${receta.strMeal}</h3>
+        <img src="${receta.strMealThumb}" alt="${receta.strMeal}" class="rounded mb-2 w-full h-64 object-cover" />
+        <p><strong>Categoría:</strong> ${receta.strCategory}</p>
+        <p><strong>Área:</strong> ${receta.strArea}</p>
+        <p class="mt-2 text-sm">${receta.strInstructions.slice(0, 200)}...</p>
+      `;
     })
-    .catch(error => {
-      console.error("Error cargando plan:", error);
-      alert("Error al cargar el plan nutricional.");
+    .catch(err => {
+      console.error(err);
+      document.getElementById("recetaAleatoria").innerHTML = "<p>Error al cargar la receta.</p>";
     });
 }
 
+// Buscar recetas por ingrediente
+function buscarRecetas() {
+  const ingrediente = document.getElementById("ingrediente").value.trim();
+  const resultados = document.getElementById("resultados");
+
+  if (!ingrediente) {
+    resultados.innerHTML = "<p class='text-red-500'>Por favor, ingresa un ingrediente.</p>";
+    return;
+  }
+
+  fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingrediente}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.meals) {
+        resultados.innerHTML = "<p class='text-gray-600'>No se encontraron recetas.</p>";
+        return;
+      }
+
+      resultados.innerHTML = "";
+      data.meals.forEach(receta => {
+        const div = document.createElement("div");
+        div.className = "bg-white rounded shadow p-4";
+        div.innerHTML = `
+          <h3 class="text-lg font-bold mb-2">${receta.strMeal}</h3>
+          <img src="${receta.strMealThumb}" alt="${receta.strMeal}" class="rounded w-full h-48 object-cover" />
+        `;
+        resultados.appendChild(div);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      resultados.innerHTML = "<p>Error al buscar recetas.</p>";
+    });
+}
+
+// Inicial
+document.addEventListener("DOMContentLoaded", recetaAleatoria);
